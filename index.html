@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Private Browsing Detection</title>
+    <script>
+        function checkPrivateBrowsing() {
+            var isPrivate = navigator.userAgent.indexOf('Chrome') !== -1 && navigator.userAgent.indexOf('Incognito') !== -1;
+            if (isPrivate) {
+                alert("You are currently in incognito mode.");
+            } else {
+                alert("You are not in incognito mode.");
+            }
+        }
+
+        window.onload = checkPrivateBrowsing;
+    </script>
+</head>
+<body>
+    <h1>Welcome to My Website</h1>
+    <p>This website will detect if you are using incognito mode.</p>
+</body>
+</html>
+
+—----------------------------------------------------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html>
+<head>
+<title>Private Browsing Detection</title>
+<script>
+function checkPrivateBrowsing() {
+  if (navigator.userAgent.includes('Safari') && !navigator.userAgent.includes('Version')) {
+    // Safari in Private Browsing Mode
+    alert('You are browsing in Private Browsing Mode.');
+  } else {
+    // Normal Browsing Mode
+    alert('You are browsing in Normal Mode.');
+  }
+}
+
+// Call the function on page load
+window.onload = checkPrivateBrowsing;
+</script>
+</head>
+<body>
+</body>
+</html>
+
