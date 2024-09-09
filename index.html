@@ -1,47 +1,72 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Private Browsing Detection</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IncognitoDetect</title>
+    <link rel="stylesheet" href="styleweb.css">
+</head>
+<body>
+    <header class="header">
+        <h1>IncognitoDetect</h1>
+        <p>Are you browsing in a private mode?</p>
+        <button onclick="checkPrivateBrowsing()">Check Now</button>
+    </header>
+
+    <main class="main">
+        <p id="result"></p>
+    </main>
+
     <script>
         function checkPrivateBrowsing() {
-            var isPrivate = navigator.userAgent.indexOf('Chrome') !== -1 && navigator.userAgent.indexOf('Incognito') !== -1;
-            if (isPrivate) {
-                alert("You are currently in incognito mode.");
-            } else {
-                alert("You are not in incognito mode.");
-            }
+    const userAgent = navigator.userAgent.toLowerCase();
+
+    // Check for common incognito-related patterns
+    const isIncognito = (
+        userAgent.includes('incognito') ||
+        userAgent.includes('private') ||
+        userAgent.includes('off-the-record') ||
+        userAgent.includes('headlesschrome')
+    );
+
+    // Check for slower connection type (often associated with incognito mode)
+    const isSlowConnection = navigator.connection.effectiveType === "2g" || navigator.connection.effectiveType === "slow-2g" || navigator.connection.effectiveType === "cellular";
+
+    // Check for limited storage quota (common in incognito mode)
+    const isLimitedStorage = navigator.storage.estimate().quota < 1024 * 1024 * 5; // Adjust quota threshold as needed
+
+    // Check for notification permissions (often denied in incognito mode)
+    navigator.permissions.query({ name: 'notifications' }).then((result) => {
+        if (result.state === 'denied') {
+            isIncognito = true;
         }
 
-        window.onload = checkPrivateBrowsing;
-    </script>
-</head>
-<body>
-    <h1>Welcome to My Website</h1>
-    <p>This website will detect if you are using incognito mode.</p>
-</body>
-</html>
+        // Check for indexedDB database usage (often restricted in incognito mode)
+        let db;
+        const request = indexedDB.open("testDB", 1);
+        request.onerror = function() {
+            isIncognito = true;
+        };
+        request.onsuccess = function(event) {
+            db = event.target.result;
+            db.close();
 
-—----------------------------------------------------------------------------------------------------------------------------
-<!DOCTYPE html>
-<html>
-<head>
-<title>Private Browsing Detection</title>
-<script>
-function checkPrivateBrowsing() {
-  if (navigator.userAgent.includes('Safari') && !navigator.userAgent.includes('Version')) {
-    // Safari in Private Browsing Mode
-    alert('You are browsing in Private Browsing Mode.');
-  } else {
-    // Normal Browsing Mode
-    alert('You are browsing in Normal Mode.');
-  }
-}
+            let message = "";
 
-// Call the function on page load
-window.onload = checkPrivateBrowsing;
+            if (isIncognito || isSlowConnection || isLimitedStorage) {
+                message = "You are likely in incognito mode.";
+            } else {
+                message = "You are not in Incognito Mode.";
+            }
+
+            document.getElementById("result").textContent = message;
+        };
+    });
+ }
+ 
 </script>
-</head>
-<body>
 </body>
 </html>
 
+ 
